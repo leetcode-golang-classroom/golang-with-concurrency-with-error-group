@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - echo "This is task cmd"
+    silent: true
+  
+  build:
+    cmds:
+      - CGO_ENABLED=0 GOOS=linux go build -o bin/main cmd/main.go
+    silent: true
+  run:
+    cmds:
+      - ./bin/main
+    deps:
+      - build
+    silent: true
+  coverage:
+    cmds:
+      - go test -v -cover ./...
+    silent: true
+  test:
+    cmds:
+      - go test -v ./...
+    silent: true
+  migration-create:
+    cmds:
+      - migrate create -ext sql -dir cmd/migrate/migrations {{.CLI_ARGS}}
+    silent: true
+  migrate-up:
+    cmds:
+      - go run cmd/migrate/main.go up
+    silent: true
+  migrate-down:
+    cmds:
+      - go run cmd/migrate/main.go down
+    silent: true
